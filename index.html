@@ -6,6 +6,18 @@
     <title>D-day</title>
   </head>
   <body>
+    <main class="widget">
+      <p class="today" id="today"></p>
+      <div class="main empty" id="main"></div>
+      <hr class="divider" />
+      <ul class="list" id="list"></ul>
+      <hr class="divider" />
+      <form class="input" id="form" autocomplete="off">
+        <span class="plus" aria-hidden="true">+</span>
+        <input id="input" aria-label="일정 추가" placeholder="12/25 크리스마스" enterkeyhint="done" />
+      </form>
+      <p class="status" id="status" aria-live="polite"></p>
+    </main>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

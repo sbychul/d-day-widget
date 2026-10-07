@@ -61,8 +61,8 @@ api/events.ts          Vercel 서버 함수 1개 (Notion REST 중계)
 | 16 | 같은 날 여러 일정 | 먼저 등록한 1개만 메인. 나머지는 목록 맨 위 |
 | 17 | 갱신 | 페이지 열 때, 탭/앱 복귀(`visibilitychange`) 때, 로컬 자정에 다시 조회 |
 | 18 | 스택 | TypeScript. 프론트 Vite(vanilla-ts), 서버 Vercel `api/*.ts` |
-| 19 | 셋업 | 수동 셋업 + README 단계별 안내 (에이전트가 사용자 Notion에 DB를 만들지 않음) |
-| 20 | 배포 방식 | GitHub 저장소 연동, push하면 자동 배포 |
+| 19 | 셋업 | 수동 셋업 + 단계별 안내 (에이전트가 사용자 Notion에 DB를 만들지 않음). `README.md`는 **일반 사용자용**이다: Notion 연결 → DB → Deploy 버튼 → 임베드 → 사용법. 로컬 실행, GitHub, 수동 배포는 `docs/development.md`에 둔다. (사용자 결정 2026-10-07) |
+| 20 | 배포 방식 | 소유자: GitHub 저장소 연동, push하면 자동 배포. 일반 사용자: README의 **Deploy with Vercel** 버튼으로 자기 사본을 배포한다(배포 1개 = DB 1개 구조 유지, 저장소 Public). (사용자 결정 2026-10-07) |
 | 21 | 저장 반응 | 낙관적 업데이트. 실패하면 되돌리고 입력칸 복구 + 오류 메시지 |
 | 22 | Handoff | 작업 1회당 파일 1개 누적 (5절) |
 | 23 | 불변 범위 | 이 표, 아래 세부사항, `spec.md`의 사용자에게 보이는 동작 전부 |

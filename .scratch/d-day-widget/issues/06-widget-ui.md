@@ -1,6 +1,6 @@
 # 06 — 위젯 UI
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 04, 05
 
 ## 목표
@@ -36,3 +36,15 @@ Figma 승인본(이슈 02)과 spec 5절에 따라 위젯 화면과 동작을 구
 - `npx vercel dev`로 Figma의 6가지 상태가 모두 재현되는지 라이트/다크에서 확인한다(스크린샷 권장).
 
 ## Comments
+
+## Answer
+
+위젯 UI를 구현했다. 실제 Notion DB와 `vercel dev`로 6가지 상태와 모든 동작을 확인했다. 대상은 다크/라이트, 마우스/터치 환경이다.
+- 사용자 결정(2026-10-07) 두 가지를 spec 5절에 반영했다.
+  1. 메인에도 `×`를 둔다. 블록 오른쪽 위에 있고, 마우스 환경은 hover/focus 때, 터치 기기는 항상 보인다.
+  2. 웹폰트는 받지 않고 Notion 기본 글꼴 목록을 그대로 쓴다. Notion도 시스템 글꼴을 쓰므로 주변 Notion 글자와 같은 글꼴로 나온다.
+- Handoff: `handoffs/2026-10-07-09-claude-code.md`(구현), `-10-`(검증), `-11-`(결정 반영)
+
+## Comments
+
+- 2026-10-07 claude-code: 버그를 고쳤다. `×`를 visibility로 숨기면, hover 스타일이 적용되기 전의 클릭이 행으로 가서 수정 모드가 열렸다. opacity로 바꿨다.

@@ -1,6 +1,6 @@
 # 07 — README 셋업 안내
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 05
 
 ## 목표
@@ -29,3 +29,22 @@ Blocked by: 05
 - 사용자가 README만 보고 배포·임베드까지 마칠 수 있다(사용자 확인).
 
 ## Comments
+
+## Answer
+
+`README.md`를 작성했다. 이슈의 11개 항목을 모두 다뤘다.
+- 추가한 내용:
+  - Node.js 최소 버전 22.12(vitest의 engines 기준)
+  - `vercel link`로 이미 프로젝트를 만든 경우 Git을 연결하는 법
+  - 환경변수를 바꾼 뒤 Redeploy가 필요하다는 점
+  - 다크 모드 팁: Notion 테마를 "시스템 설정 사용"으로 두기. 위젯은 OS/브라우저 설정을 따르기 때문이다.
+  - Windows에서 포트가 남는 문제
+  - `gh repo create` 한 줄 대안
+- 완료 조건 "사용자가 README만 보고 배포까지 마칠 수 있다"는 실제 배포 때 확인한다.
+- Handoff: `handoffs/2026-10-07-12-claude-code.md`
+- 2026-10-07 claude-code (사용자 피드백 반영)
+  - Notion 연결 만드는 절차가 바뀌었다(사용자 제보). 개발자 모드 → 설정 → 기능 → 연결 → 연결 추가하기 → 개발자 연결 → API 토큰. 연결의 기능에서 읽기, 업데이트, 삽입을 확인한다. README 1단계를 고치고, 용어도 "통합"에서 "연결"로 바꿨다.
+  - README를 일반 사용자용으로 바꿨다.
+    - 로컬 실행, GitHub, 수동 배포는 `docs/development.md`로 옮겼다(Q28).
+    - 일반 사용자가 위젯 주소를 얻는 방법은 **Deploy with Vercel** 버튼이다(Q27). 이를 위해 원본 저장소는 Public이어야 한다.
+  - 버튼 링크의 `<OWNER>`는 GitHub 저장소를 만들 때 바꾼다(README에 TODO 주석).

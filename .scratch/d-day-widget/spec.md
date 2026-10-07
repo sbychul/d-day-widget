@@ -166,7 +166,7 @@ Vercel 함수 1개다. Web 표준 시그니처를 쓰며, 메서드별로 named 
 ### 스타일 (Figma 승인본 기준: https://www.figma.com/design/QmqZtbIUqhJNng8R6xPUVl, 페이지 `02 화면`)
 
 - 방향: **블록형**. 테두리, 배경 박스, 그림자가 없어서 Notion 본문 블록과 구분되지 않는다.
-- 글꼴: `ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", Helvetica, Arial, sans-serif`. Figma에서는 Inter(라틴·숫자)와 Noto Sans KR(한글)로 대체했다.
+- 글꼴: Notion 기본 글꼴 목록을 그대로 쓴다. `ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"`. **웹폰트는 받지 않는다**(사용자 결정, 2026-10-07). Notion도 기본 스타일에서는 시스템 글꼴을 쓰므로, 이렇게 하면 위젯 글자가 주변 Notion 글자와 같은 글꼴로 나온다. Figma는 Inter + Noto Sans KR로 그렸으므로 OS에 따라 굵기가 다를 수 있다(예: Windows 맑은 고딕에는 Medium이 없다). 이 경우에는 Notion과 같게 보이는 것을 우선한다.
 - 팔레트: Figma 변수 `Theme`과 1:1로 대응한다. CSS 변수 이름도 같게 쓴다.
 
   | 토큰 | Light | Dark | 용도 |
@@ -196,7 +196,7 @@ Vercel 함수 1개다. Web 표준 시그니처를 쓰며, 메서드별로 named 
   | 목록 행 | 높이 34, 좌우 패딩 8, 모서리 4, 행 간격 2, 요소 간격 12 |
   | 목록 D 열 | 폭 52, 14 / Medium / `sub` |
   | 목록 일정명 | 15 / Regular / `text` |
-  | `×` | 18 / `placeholder` |
+  | `×` | 18 / `placeholder`. 목록 행은 오른쪽 끝, **메인은 블록 오른쪽 위**(사용자 결정, 2026-10-07). 마우스 환경에서는 hover/focus 때만, 터치 기기에서는 항상 보인다. |
   | `삭제?` | 13 / Medium / `error` |
   | 입력칸 | 패딩 6·8, 요소 간격 8, `+` 18 `placeholder`, 텍스트 15. 테두리·배경 없음. |
   | 상태 줄 | 12 / `sub` 또는 `error` |
@@ -210,15 +210,17 @@ Vercel 함수 1개다. Web 표준 시그니처를 쓰며, 메서드별로 named 
   - 상태 줄은 `aria-live="polite"`로 둔다.
   - 키보드만으로 모든 조작이 가능해야 한다(행은 Enter로 수정 시작).
 
-## 6. 셋업과 배포 (README에 기록)
+## 6. 셋업과 배포
 
-1. https://www.notion.so/my-integrations 에서 내부 통합을 만들고 토큰을 복사한다.
-2. Notion에 전용 DB를 만들고 속성을 `이름`(제목), `날짜`(날짜)로 둔다.
-3. DB 페이지에서 `⋯` → 연결 → 1단계에서 만든 통합을 추가한다.
+`README.md`(일반 사용자용) 순서:
+1. Notion 설정에서 **개발자 모드**를 켠다 → **설정 → 기능 → 연결 → 연결 추가하기 → 개발자 연결** → 연결 이름, 인증 방법 **API 토큰**으로 생성 → 토큰 복사. 연결의 **기능**에서 콘텐츠 읽기, 업데이트, 삽입이 켜져 있는지 확인한다.
+2. 전용 DB를 만들고 속성을 `이름`(제목), `날짜`(날짜)로 둔다.
+3. DB `⋯` → 연결 → 1단계의 연결을 추가한다.
 4. DB의 "데이터베이스 ID"를 복사한다. DB 메뉴의 "데이터베이스 ID 복사"를 쓰거나, DB를 전체 페이지로 열었을 때 URL에서 `?v=` 앞의 32자리를 쓴다(하이픈 유무는 상관없다). 부모 페이지의 ID나 "데이터 소스 ID"가 아니다.
-5. GitHub 저장소를 만들고 push한다.
-6. Vercel에서 그 저장소를 Import하고, 환경변수 `NOTION_TOKEN`, `NOTION_DB_ID`를 등록한 뒤 Deploy한다.
-7. Notion 페이지에서 `/embed`를 입력하고 배포 URL을 붙인 뒤 높이를 조절한다.
+5. **Deploy with Vercel** 버튼을 누른다. Vercel이 사본 저장소를 만든다. 환경변수 `NOTION_TOKEN`, `NOTION_DB_ID`를 입력하고 Deploy한다. 버튼에는 원본 저장소(Public)의 URL이 필요하다.
+6. Notion에서 `/임베드` → 위젯 주소를 넣고 높이를 조절한다.
+
+개발자용(로컬 실행, GitHub push, Vercel 수동 배포)은 `docs/development.md`에 있다.
 
 ## 7. 검증
 

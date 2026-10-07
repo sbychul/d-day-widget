@@ -1,5 +1,256 @@
+/* Values follow the approved Figma (Theme variables) — see spec §5 "스타일". */
+:root {
+  --bg: #ffffff;
+  --text: #2c2c2b;
+  --sub: #787774;
+  --placeholder: #a19e99;
+  --divider: #e6e5e3;
+  --hover: #f1f1ef;
+  --highlight: #d3e5ef;
+  --error: #d44c47;
+  --focus: rgba(35, 131, 226, 0.5);
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #191919;
+    --text: #f0efed;
+    --sub: #9b9b9b;
+    --placeholder: #7d7a75;
+    --divider: #383836;
+    --hover: #262626;
+    --highlight: #28456c;
+    --error: #df5452;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
 html,
 body {
   height: 100%;
   margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  /* Notion's own default stack (system fonts, no webfont) so the widget matches surrounding Notion text. */
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI Variable Display', 'Segoe UI', Helvetica,
+    'Apple Color Emoji', Arial, sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
+  line-height: 1.2;
+  -webkit-font-smoothing: antialiased;
+}
+
+.widget {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+}
+
+.today {
+  margin: 0;
+  font-size: 12px;
+  color: var(--sub);
+}
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Main: number on top, title at the bottom of a fixed 84px block. */
+.main {
+  position: relative;
+  flex: none;
+  height: 84px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.main.empty {
+  justify-content: flex-end;
+  cursor: default;
+}
+
+/* box-shadow paints the state color slightly outside the block without shifting the layout. */
+.main.editing {
+  background: var(--highlight);
+  box-shadow: 0 0 0 4px var(--highlight);
+}
+
+.main.confirming {
+  background: var(--hover);
+  box-shadow: 0 0 0 4px var(--hover);
+}
+
+.main-d {
+  font-size: 48px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.main-title {
+  padding-right: 48px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.main .del {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.divider {
+  flex: none;
+  height: 1px;
+  margin: 0;
+  border: 0;
+  background: var(--divider);
+}
+
+.list {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--divider) transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.row {
+  flex: none;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.row.confirming {
+  background: var(--hover);
+}
+
+.row.editing {
+  background: var(--highlight);
+}
+
+.row-d {
+  flex: none;
+  width: 52px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--sub);
+  font-variant-numeric: tabular-nums;
+}
+
+.row-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 15px;
+}
+
+[data-id]:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.del {
+  flex: none;
+  padding: 0 2px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--placeholder);
+  cursor: pointer;
+}
+
+.del.confirm {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--error);
+}
+
+/* Mouse: × only on hover/focus. Touch (hover: none): always visible. */
+@media (hover: hover) {
+  .row:hover {
+    background: var(--hover);
+  }
+  .row.editing:hover {
+    background: var(--highlight);
+  }
+  /* opacity (not visibility) keeps × clickable even before the hover style applies. */
+  .del {
+    opacity: 0;
+  }
+  [data-id]:hover .del,
+  [data-id]:focus-within .del,
+  .del.confirm {
+    opacity: 1;
+  }
+}
+
+.input {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 6px 8px;
+}
+
+.plus {
+  font-size: 18px;
+  line-height: 1;
+  color: var(--placeholder);
+}
+
+.input input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+}
+
+.input input::placeholder {
+  color: var(--placeholder);
+}
+
+.status {
+  flex: none;
+  margin: 0;
+  font-size: 12px;
+  color: var(--sub);
+}
+
+.status:empty {
+  display: none;
+}
+
+.status.error {
+  color: var(--error);
 }
