@@ -16,7 +16,7 @@ Blocked by: 05
 3. 전용 DB 만들기. 속성 이름은 `이름`, `날짜`로 **정확히** 맞춘다.
 4. DB에 통합 연결하기
 5. DB ID 찾기(URL 예시 포함)
-6. 로컬 실행: `.env.local` 작성 → `npm install` → `npx vercel dev`
+6. 로컬 실행: `.env` 작성(`.env.example` 복사. `npx vercel dev`는 `.env.local`을 읽지 않는다) → `npm install` → `npx vercel dev`
 7. GitHub 저장소 만들기와 push
 8. Vercel Import, 환경변수 등록, Deploy
 9. Notion 페이지에 `/embed` → 배포 URL → 높이 조절

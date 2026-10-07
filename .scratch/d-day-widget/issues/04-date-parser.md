@@ -1,6 +1,6 @@
 # 04 — 날짜 파서
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 03
 
 ## 목표
@@ -26,3 +26,16 @@ spec 3절을 그대로 구현한다.
 - `npx tsc --noEmit` 통과
 
 ## Comments
+
+## Answer
+
+`src/parse.ts`와 `src/parse.test.ts`(45개 테스트)를 만들었다.
+- 공개 함수:
+  - `parseInput`, `ddays`, `formatToday`
+  - `dLabel`: `D-Day`/`D-n`
+  - `localToday`: 로컬 YYYY-MM-DD, 클라이언트가 `today` 파라미터로 쓴다.
+  - `isValidDate`, `titleLength`, `TITLE_MAX`, `ERR`: 이슈 05의 서버 검증에서 재사용할 수 있다.
+- spec 3절에 비어 있던 두 가지를 명시했다.
+  - 글자 수는 코드 포인트 기준으로 센다.
+  - 오류는 정해진 순서로 판정하고, 먼저 걸린 하나만 표시한다.
+- Handoff: `handoffs/2026-10-07-07-claude-code.md`

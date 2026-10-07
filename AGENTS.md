@@ -97,7 +97,7 @@ api/events.ts          Vercel 서버 함수 1개 (Notion REST 중계)
 ## 4. 작업 규칙
 
 - 이슈 범위 밖의 변경은 하지 않는다. 필요한 일을 발견하면 새 이슈 파일을 `Status: needs-triage`로 만든다.
-- 비밀값(`NOTION_TOKEN` 등)은 커밋하지 않는다. 로컬은 `.env.local`, 배포는 Vercel 환경변수를 쓴다. `.env.example`에는 변수 이름만 둔다.
+- 비밀값(`NOTION_TOKEN` 등)은 커밋하지 않는다. 로컬은 `.env`(`npx vercel dev`는 `.env.local`의 값을 읽지 않는다), 배포는 Vercel 환경변수를 쓴다. `.env.example`에는 변수 이름만 둔다.
 - 사용자 입력과 요청 본문은 서버 경계에서 검증한다(`spec.md` 4절).
 - 커밋, push, 배포처럼 외부에 영향을 주는 작업은 사용자가 요청했을 때만 한다.
 
@@ -185,6 +185,6 @@ api/events.ts          Vercel 서버 함수 1개 (Notion REST 중계)
 | 환경변수 | 내용 |
 |---|---|
 | `NOTION_TOKEN` | Notion 내부 통합 토큰 (`ntn_...` 또는 `secret_...`) |
-| `NOTION_DB_ID` | 위젯 전용 Notion DB ID (32자리 hex) |
+| `NOTION_DB_ID` | 위젯 전용 Notion DB ID (32자리 hex 또는 하이픈 포함 UUID. Notion "데이터베이스 ID 복사" 값을 그대로 써도 된다. "데이터 소스 ID"는 다른 값이다) |
 
 _`npx vercel dev`는 Vercel CLI 로그인과 프로젝트 연결(`vercel link`)이 필요하다. 처음 한 번은 사용자가 직접 해야 한다._
