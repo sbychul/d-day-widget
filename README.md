@@ -69,8 +69,7 @@ Notion 페이지에 임베드하는 D-day 위젯입니다. 입력칸에 `12/25 �
 
 아래 버튼을 누르면 Vercel이 위젯을 내 계정에 복사하고 배포까지 알아서 합니다. 코드나 터미널은 필요 없습니다.
 
-<!-- TODO(배포 시): <OWNER>를 실제 GitHub 계정명으로 바꾼다. 저장소는 Public이어야 버튼이 동작한다. -->
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2F%3COWNER%3E%2Fd-day-widget&project-name=d-day-widget&repository-name=d-day-widget&env=NOTION_TOKEN,NOTION_DB_ID&envDescription=NOTION_TOKEN%EC%9D%80%201%EB%8B%A8%EA%B3%84%EC%9D%98%20API%20%ED%86%A0%ED%81%B0%2C%20NOTION_DB_ID%EB%8A%94%204%EB%8B%A8%EA%B3%84%EC%9D%98%20%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4%20ID)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsbychul%2Fd-day-widget&project-name=d-day-widget&repository-name=d-day-widget&env=NOTION_TOKEN,NOTION_DB_ID&envDescription=NOTION_TOKEN%EC%9D%80%201%EB%8B%A8%EA%B3%84%EC%9D%98%20API%20%ED%86%A0%ED%81%B0%2C%20NOTION_DB_ID%EB%8A%94%204%EB%8B%A8%EA%B3%84%EC%9D%98%20%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4%20ID)
 
 1. 버튼을 누르고 GitHub 계정으로 Vercel에 로그인합니다. Vercel 계정이 없으면 이때 만들어집니다(무료).
 2. 저장소 이름은 그대로 두고 **Create**를 누릅니다. 내 GitHub에 위젯 사본이 만들어집니다.
