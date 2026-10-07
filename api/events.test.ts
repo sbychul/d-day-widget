@@ -16,6 +16,7 @@ let replies: { status?: number; body: unknown }[];
 beforeEach(() => {
   process.env.NOTION_TOKEN = 'test-token';
   process.env.NOTION_DB_ID = 'db1';
+  process.env.WIDGET_KEY = 'k3y';
   calls = [];
   replies = [];
   vi.stubGlobal('fetch', async (url: string, init: RequestInit) => {
@@ -26,8 +27,34 @@ beforeEach(() => {
 });
 afterEach(() => vi.unstubAllGlobals());
 
-const req = (path: string, method = 'GET', body?: unknown) =>
-  new Request(`http://localhost${path}`, { method, body: body === undefined ? undefined : typeof body === 'string' ? body : JSON.stringify(body) });
+const req = (path: string, method = 'GET', body?: unknown, key: string | null = 'k3y') =>
+  new Request(`http://localhost${path}`, {
+    method,
+    headers: key === null ? {} : { 'X-Widget-Key': key },
+    body: body === undefined ? undefined : typeof body === 'string' ? body : JSON.stringify(body),
+  });
+
+describe('widget key', () => {
+  it.each([
+    ['missing', null],
+    ['wrong', 'nope'],
+    ['prefix of the key', 'k3'],
+  ])('rejects a %s key with 401 before touching Notion', async (_, key) => {
+    for (const [fn, method] of [[GET, 'GET'], [POST, 'POST'], [PATCH, 'PATCH'], [DELETE, 'DELETE']] as const) {
+      const body = method === 'POST' || method === 'PATCH' ? { title: 'x', date: '2026-12-25' } : undefined;
+      const res = await fn(req('/api/events?today=2026-10-07&id=1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d', method, body, key));
+      expect(res.status).toBe(401);
+    }
+    expect(calls).toHaveLength(0);
+  });
+
+  it('returns 500 when WIDGET_KEY is not configured', async () => {
+    delete process.env.WIDGET_KEY;
+    const res = await GET(req('/api/events?today=2026-10-07'));
+    expect(res.status).toBe(500);
+    expect(await res.json()).toEqual({ error: 'server not configured' });
+  });
+});
 
 describe('GET', () => {
   it('archives past events, skips dateless pages, follows pagination', async () => {

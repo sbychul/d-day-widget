@@ -9,6 +9,7 @@ const MSG = {
   saveFailed: '저장하지 못했어요',
   deleteFailed: '삭제하지 못했어요',
   confirm: '삭제?',
+  unauthorized: '위젯 주소의 key가 없거나 틀렸어요',
 } as const;
 const CONFIRM_MS = 3000;
 
@@ -29,6 +30,19 @@ let error = '';
 let pending = 0;
 
 const isTemp = (id: string) => id.startsWith('temp-');
+// The widget key travels in the embed URL (?key=...) and is sent to the API as a header.
+const widgetKey = new URLSearchParams(location.search).get('key') ?? '';
+
+class ApiError extends Error {
+  readonly status: number;
+  constructor(status: number) {
+    super(`HTTP ${status}`);
+    this.status = status;
+  }
+}
+
+const failure = (e: unknown, fallback: string) =>
+  e instanceof ApiError && e.status === 401 ? MSG.unauthorized : fallback;
 
 function sortEvents() {
   events.sort((a, b) => a.date.localeCompare(b.date) || a.created.localeCompare(b.created));
@@ -37,10 +51,13 @@ function sortEvents() {
 async function api<T>(method: string, query = '', body?: unknown): Promise<T> {
   const res = await fetch(`/api/events${query}`, {
     method,
-    headers: body === undefined ? undefined : { 'Content-Type': 'application/json' },
+    headers: {
+      'X-Widget-Key': widgetKey,
+      ...(body === undefined ? {} : { 'Content-Type': 'application/json' }),
+    },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  if (!res.ok) throw new ApiError(res.status);
   return (res.status === 204 ? null : await res.json()) as T;
 }
 
@@ -132,10 +149,10 @@ async function load() {
   if (pending) return;
   try {
     events = await api<Event[]>('GET', `?today=${localToday()}`);
-    if (error === MSG.loadFailed) error = '';
+    if (error === MSG.loadFailed || error === MSG.unauthorized) error = '';
     if (editingId && !events.some((e) => e.id === editingId)) stopEditing();
-  } catch {
-    error = MSG.loadFailed;
+  } catch (e) {
+    error = failure(e, MSG.loadFailed);
   }
   sortEvents();
   render();
@@ -153,10 +170,10 @@ function add(date: string, title: string, raw: string) {
     try {
       const saved = await api<Event>('POST', '', { title, date });
       events = events.map((e) => (e.id === temp.id ? saved : e));
-    } catch {
-      events = events.filter((e) => e.id !== temp.id);
+    } catch (e) {
+      events = events.filter((ev) => ev.id !== temp.id);
       if (!input.value) input.value = raw;
-      error = MSG.saveFailed;
+      error = failure(e, MSG.saveFailed);
     }
   });
 }
@@ -169,9 +186,9 @@ function saveEdit(id: string, date: string, title: string) {
     try {
       const saved = await api<Event>('PATCH', `?id=${encodeURIComponent(id)}`, { title, date });
       events = events.map((e) => (e.id === id ? saved : e));
-    } catch {
-      events = events.map((e) => (e.id === id ? prev : e));
-      error = MSG.saveFailed;
+    } catch (e) {
+      events = events.map((ev) => (ev.id === id ? prev : ev));
+      error = failure(e, MSG.saveFailed);
     }
   });
 }
@@ -209,9 +226,9 @@ function onDelete(id: string) {
   void track(async () => {
     try {
       await api<null>('DELETE', `?id=${encodeURIComponent(id)}`);
-    } catch {
+    } catch (e) {
       events.push(removed);
-      error = MSG.deleteFailed;
+      error = failure(e, MSG.deleteFailed);
     }
   });
 }

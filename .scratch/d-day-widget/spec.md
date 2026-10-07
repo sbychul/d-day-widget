@@ -101,7 +101,8 @@ parseInput(input: string, today: string /* YYYY-MM-DD */):
 Vercel 함수 1개다. Web 표준 시그니처를 쓰며, 메서드별로 named export한다(`export async function GET(request: Request): Promise<Response>` 등).
 
 공통 사항:
-- 환경변수 `NOTION_TOKEN`, `NOTION_DB_ID`를 쓴다. 없으면 500을 반환한다(`{ error: "server not configured" }`).
+- 환경변수 `NOTION_TOKEN`, `NOTION_DB_ID`, `WIDGET_KEY`를 쓴다. 없으면 500을 반환한다(`{ error: "server not configured" }`).
+- **접근 키**: 모든 요청은 `X-Widget-Key` 헤더가 `WIDGET_KEY`와 같아야 한다. 고정 시간으로 비교하고, 입력 검증이나 Notion 호출보다 먼저 확인한다. 다르면 401(`{ error: "unauthorized" }`)을 반환한다.
 - Notion 호출 헤더는 `Authorization: Bearer ${NOTION_TOKEN}`, `Notion-Version: 2022-06-28`, `Content-Type: application/json`이다.
 - 응답은 모두 JSON이다. 오류 응답은 `{ error: string }` 형태다.
 - Notion이 오류로 응답하면 502를 반환하고, Notion의 `message`를 `error`에 담는다.
@@ -151,7 +152,7 @@ Vercel 함수 1개다. Web 표준 시그니처를 쓰며, 메서드별로 named 
 
 | 동작 | 처리 |
 |---|---|
-| 로드 | `GET /api/events?today=<로컬 오늘>`. 실패하면 상태 줄에 `불러오지 못했어요` 표시. |
+| 로드 | `GET /api/events?today=<로컬 오늘>`. 실패하면 상태 줄에 `불러오지 못했어요` 표시. 모든 요청은 페이지 주소의 `?key=` 값을 `X-Widget-Key` 헤더로 보낸다. 401이면 어떤 동작이든 `위젯 주소의 key가 없거나 틀렸어요`를 표시한다. |
 | 추가 (Enter, 수정 중 아님) | `parseInput`이 실패하면 오류를 표시하고 입력을 유지한다. 성공하면 임시 id로 즉시 추가하고 입력칸을 비운 뒤 POST한다. 성공 시 임시 항목을 응답으로 교체한다. 실패 시 임시 항목을 제거하고, 입력칸이 비어 있으면 원래 입력을 복구하며, `저장하지 못했어요`를 표시한다. |
 | 수정 시작 | 메인이나 목록 행(× 제외)을 클릭하면 `editingId`를 설정하고 입력칸에 `YYYY-MM-DD 제목`을 채운 뒤 포커스한다. 해당 항목을 하이라이트한다. |
 | 수정 저장 (Enter) | 파싱이 성공하면 즉시 반영하고 PATCH한다. 실패하면 이전 값으로 되돌리고 `저장하지 못했어요`를 표시한다. |
@@ -217,8 +218,9 @@ Vercel 함수 1개다. Web 표준 시그니처를 쓰며, 메서드별로 named 
 2. 전용 DB를 만들고 속성을 `이름`(제목), `날짜`(날짜)로 둔다.
 3. DB `⋯` → 연결 → 1단계의 연결을 추가한다.
 4. DB의 "데이터베이스 ID"를 복사한다. DB 메뉴의 "데이터베이스 ID 복사"를 쓰거나, DB를 전체 페이지로 열었을 때 URL에서 `?v=` 앞의 32자리를 쓴다(하이픈 유무는 상관없다). 부모 페이지의 ID나 "데이터 소스 ID"가 아니다.
-5. **Deploy with Vercel** 버튼을 누른다. Vercel이 사본 저장소를 만든다. 환경변수 `NOTION_TOKEN`, `NOTION_DB_ID`를 입력하고 Deploy한다. 버튼에는 원본 저장소(Public)의 URL이 필요하다.
-6. Notion에서 `/임베드` → 위젯 주소를 넣고 높이를 조절한다.
+5. 접근 키를 정한다(영문·숫자 32자 이상).
+6. **Deploy with Vercel** 버튼을 누른다. Vercel이 사본 저장소를 만든다. 환경변수 `NOTION_TOKEN`, `NOTION_DB_ID`, `WIDGET_KEY`를 입력하고 Deploy한다. 버튼에는 원본 저장소(Public)의 URL이 필요하다.
+7. Notion에서 `/임베드` → `위젯주소/?key=접근키`를 넣고 높이를 조절한다.
 
 개발자용(로컬 실행, GitHub push, Vercel 수동 배포)은 `docs/development.md`에 있다.
 

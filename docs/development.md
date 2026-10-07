@@ -2,7 +2,7 @@
 
 위젯을 직접 실행하거나 고치거나 배포하는 사람을 위한 문서입니다. 사용자용 안내는 [README](../README.md)에 있습니다. AI 에이전트 작업 규칙은 [AGENTS.md](../AGENTS.md), 상세 규격은 [spec](../.scratch/d-day-widget/spec.md)에 있습니다.
 
-준비물: Node.js 22.12 이상, Vercel 계정, Notion API 토큰과 데이터베이스 ID(README 1–4단계).
+준비물: Node.js 22.12 이상, Vercel 계정, Notion API 토큰·데이터베이스 ID·접근 키(README 1–5단계).
 
 ## 로컬에서 실행하기
 
@@ -14,6 +14,7 @@
    ```
    NOTION_TOKEN=ntn_...
    NOTION_DB_ID=데이터베이스ID
+   WIDGET_KEY=영문숫자32자이상의접근키
    ```
    `npx vercel dev`는 `.env.local`이 아니라 `.env`를 읽습니다. 두 파일 모두 git에 올라가지 않습니다.
 3. Vercel CLI에 로그인하고 프로젝트를 연결합니다. 처음 한 번만 하면 됩니다.
@@ -27,7 +28,7 @@
    ```bash
    npx vercel dev
    ```
-   터미널에 나온 주소(기본값 `http://localhost:3000`)를 브라우저로 엽니다.
+   터미널에 나온 주소 뒤에 `?key=`를 붙여서 엽니다(예: `http://localhost:3000/?key=<WIDGET_KEY>`). 키가 없거나 틀리면 API가 401을 반환합니다.
 
 > Windows에서 `vercel dev`를 끈 뒤 다시 켤 때 포트가 이미 사용 중이라고 나오면, 남아 있는 `node` 프로세스를 작업 관리자에서 종료하세요.
 
@@ -58,6 +59,7 @@ gh repo create d-day-widget --public --source . --push
    |---|---|
    | `NOTION_TOKEN` | Notion API 토큰 ([README 1단계](../README.md)) |
    | `NOTION_DB_ID` | 데이터베이스 ID ([README 4단계](../README.md)) |
+   | `WIDGET_KEY` | 접근 키 ([README 5단계](../README.md)) |
 
 4. **Deploy**를 누릅니다. 끝나면 `https://<프로젝트이름>.vercel.app` 같은 주소가 생깁니다.
 
@@ -77,3 +79,5 @@ gh repo create d-day-widget --public --source . --push
 구성은 다음과 같습니다.
 - `index.html`, `src/`: 화면(Vite, TypeScript, 의존성 없음)
 - `api/events.ts`: Notion API 중계 함수
+
+> 배포에 비밀값 파일이 올라가지 않도록 `.vercelignore`가 `.env*`를 제외합니다. CLI 배포(`vercel --prod`)는 이 파일이 없으면 로컬 `.env`까지 업로드하고, 서버가 그 값을 사용합니다.

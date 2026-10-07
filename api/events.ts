@@ -1,6 +1,8 @@
 // Single Vercel function relaying the widget to the Notion REST API (spec §4).
 // Kept self-contained: Vercel runs api/ files as unbundled ESM, so importing ../src is avoided.
 
+import { timingSafeEqual } from 'node:crypto';
+
 const NOTION = 'https://api.notion.com/v1';
 const NOTION_VERSION = '2022-06-28';
 const TITLE_MAX = 200; // same rule as src/parse.ts
@@ -113,8 +115,18 @@ function readId(request: Request): string {
   return id;
 }
 
-async function handle(run: () => Promise<Response>): Promise<Response> {
+/** Every request must carry the widget key (env WIDGET_KEY) in the X-Widget-Key header. */
+function authorize(request: Request) {
+  const expected = process.env.WIDGET_KEY?.trim();
+  if (!expected) throw new HttpError(500, 'server not configured');
+  const given = Buffer.from(request.headers.get('x-widget-key') ?? '');
+  const want = Buffer.from(expected);
+  if (given.length !== want.length || !timingSafeEqual(given, want)) throw new HttpError(401, 'unauthorized');
+}
+
+async function handle(request: Request, run: () => Promise<Response>): Promise<Response> {
   try {
+    authorize(request);
     return await run();
   } catch (e) {
     if (e instanceof HttpError) return Response.json({ error: e.message }, { status: e.status });
@@ -123,7 +135,7 @@ async function handle(run: () => Promise<Response>): Promise<Response> {
 }
 
 export function GET(request: Request): Promise<Response> {
-  return handle(async () => {
+  return handle(request, async () => {
     const today = new URL(request.url).searchParams.get('today');
     if (!isDate(today)) throw new HttpError(400, 'invalid today');
     const events: Event[] = [];
@@ -139,7 +151,7 @@ export function GET(request: Request): Promise<Response> {
 }
 
 export function POST(request: Request): Promise<Response> {
-  return handle(async () => {
+  return handle(request, async () => {
     const { title, date } = await readBody(request);
     const page = await notion<NotionPage>('/pages', 'POST', {
       parent: { database_id: config().db },
@@ -150,7 +162,7 @@ export function POST(request: Request): Promise<Response> {
 }
 
 export function PATCH(request: Request): Promise<Response> {
-  return handle(async () => {
+  return handle(request, async () => {
     const id = readId(request);
     const { title, date } = await readBody(request);
     const page = await notion<NotionPage>(`/pages/${id}`, 'PATCH', { properties: properties(title, date) });
@@ -159,7 +171,7 @@ export function PATCH(request: Request): Promise<Response> {
 }
 
 export function DELETE(request: Request): Promise<Response> {
-  return handle(async () => {
+  return handle(request, async () => {
     await archive(readId(request));
     return new Response(null, { status: 204 });
   });
