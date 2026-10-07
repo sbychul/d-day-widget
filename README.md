@@ -89,7 +89,7 @@ Notion 페이지에 임베드하는 D-day 위젯입니다. 입력칸에 `12/25 �
    | `NOTION_DB_ID` | 4단계의 데이터베이스 ID |
    | `WIDGET_KEY` | 5단계에서 정한 접근 키 |
 
-4. **Deploy**를 누릅니다. 1분 정도 지나면 `https://d-day-widget-xxxx.vercel.app` 같은 주소가 생깁니다. 이 주소가 내 위젯입니다.
+4. **Deploy**를 누릅니다. 1분 정도 지나면 배포 완료 화면에 내 위젯 주소가 나옵니다. `d-day-widget.vercel.app`은 이미 쓰이고 있으므로, Vercel이 뒤에 문자를 자동으로 붙인 주소를 줍니다(예: `https://d-day-widget-abc12.vercel.app`). 나중에는 Vercel 프로젝트의 **Settings → Domains**에서 다시 볼 수 있습니다.
 
 > 값을 잘못 넣었다면 Vercel 프로젝트의 **Settings → Environment Variables**에서 고친 뒤, **Deployments**에서 최신 배포를 **Redeploy**하세요.
 
@@ -98,7 +98,7 @@ Notion 페이지에 임베드하는 D-day 위젯입니다. 입력칸에 `12/25 �
 1. 위젯을 넣을 Notion 페이지에서 `/임베드`(또는 `/embed`)를 입력합니다.
 2. 6단계의 위젯 주소 뒤에 `?key=접근키`를 붙여서 넣고 **링크 임베드**를 누릅니다.
    ```
-   https://d-day-widget-xxxx.vercel.app/?key=5단계에서_정한_접근_키
+   https://내_위젯_주소.vercel.app/?key=5단계에서_정한_접근_키
    ```
    위젯에 `위젯 주소의 key가 없거나 틀렸어요`가 나오면 키를 다시 확인하세요.
 3. 블록 아래쪽 가장자리를 끌어서 높이를 조절합니다. 목록이 길면 위젯 안에서 스크롤됩니다.
