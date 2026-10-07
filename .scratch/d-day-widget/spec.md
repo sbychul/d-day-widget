@@ -218,7 +218,7 @@ Vercel 함수 1개다. Web 표준 시그니처를 쓰며, 메서드별로 named 
 2. 전용 DB를 만들고 속성을 `이름`(제목), `날짜`(날짜)로 둔다.
 3. DB `⋯` → 연결 → 1단계의 연결을 추가한다.
 4. DB의 "데이터베이스 ID"를 복사한다. DB 메뉴의 "데이터베이스 ID 복사"를 쓰거나, DB를 전체 페이지로 열었을 때 URL에서 `?v=` 앞의 32자리를 쓴다(하이픈 유무는 상관없다). 부모 페이지의 ID나 "데이터 소스 ID"가 아니다.
-5. 접근 키를 정한다(영문·숫자 32자 이상).
+5. 접근 키를 만든다. README 버튼은 `public/keygen.html`(운영: `https://d-day-widget.vercel.app/keygen.html`)로 연결되고, 브라우저에서 32자 영숫자를 생성한다. 네트워크는 쓰지 않는다(CSP `default-src 'none'`). 직접 정해도 된다(영숫자 32자 이상).
 6. **Deploy with Vercel** 버튼을 누른다. Vercel이 사본 저장소를 만든다. 환경변수 `NOTION_TOKEN`, `NOTION_DB_ID`, `WIDGET_KEY`를 입력하고 Deploy한다. 버튼에는 원본 저장소(Public)의 URL이 필요하다.
 7. Notion에서 `/임베드` → `위젯주소/?key=접근키`를 넣고 높이를 조절한다.
 

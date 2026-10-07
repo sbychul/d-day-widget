@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- No network access at all: the key is generated and shown only in this browser. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'" />
+    <meta name="referrer" content="no-referrer" />
+    <title>접근 키 만들기 · D-day Widget</title>
+    <style>
+      :root {
+        --bg: #ffffff;
+        --text: #2c2c2b;
+        --sub: #787774;
+        --divider: #e6e5e3;
+        --hover: #f1f1ef;
+        --accent: #2383e2;
+        color-scheme: light dark;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #191919;
+          --text: #f0efed;
+          --sub: #9b9b9b;
+          --divider: #383836;
+          --hover: #262626;
+        }
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI Variable Display', 'Segoe UI', Helvetica,
+          'Apple Color Emoji', Arial, sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
+        line-height: 1.5;
+      }
+      main {
+        max-width: 560px;
+        margin: 0 auto;
+        padding: 48px 16px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 28px;
+      }
+      p {
+        margin: 0 0 16px;
+        color: var(--sub);
+      }
+      .key {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin: 24px 0 12px;
+        padding: 12px;
+        border: 1px solid var(--divider);
+        border-radius: 6px;
+        background: var(--hover);
+        color: var(--text);
+        font: 600 17px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
+        letter-spacing: 0.02em;
+      }
+      .actions {
+        display: flex;
+        gap: 8px;
+      }
+      button {
+        padding: 8px 14px;
+        border: 1px solid var(--divider);
+        border-radius: 6px;
+        background: transparent;
+        color: var(--text);
+        font: inherit;
+        cursor: pointer;
+      }
+      button.primary {
+        border-color: var(--accent);
+        background: var(--accent);
+        color: #fff;
+      }
+      button:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      .status {
+        min-height: 1.5em;
+        margin-top: 12px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>접근 키 만들기</h1>
+      <p>D-day 위젯의 <code>WIDGET_KEY</code>로 쓸 무작위 키입니다. 이 키는 이 브라우저 안에서만 만들어지며 어디에도 전송되지 않습니다.</p>
+      <input class="key" id="key" readonly aria-label="생성된 접근 키" />
+      <div class="actions">
+        <button class="primary" id="copy" type="button">복사</button>
+        <button id="again" type="button">다시 만들기</button>
+      </div>
+      <p class="status" id="status" aria-live="polite"></p>
+      <p>복사한 키는 Vercel 배포 화면의 <code>WIDGET_KEY</code> 칸과 Notion 임베드 주소의 <code>?key=</code> 뒤에 똑같이 넣으세요. 이 페이지를 닫으면 키는 다시 볼 수 없으니 메모해 두세요.</p>
+    </main>
+    <script>
+      const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      const LENGTH = 32;
+      const keyEl = document.getElementById('key');
+      const statusEl = document.getElementById('status');
+
+      // Rejection sampling: bytes >= 248 (= 62 * 4) are discarded so every character is equally likely.
+      function makeKey() {
+        let out = '';
+        while (out.length < LENGTH) {
+          for (const b of crypto.getRandomValues(new Uint8Array(64))) {
+            if (b < 248 && out.length < LENGTH) out += CHARS[b % 62];
+          }
+        }
+        return out;
+      }
+
+      function refresh() {
+        keyEl.value = makeKey();
+        statusEl.textContent = '';
+      }
+
+      document.getElementById('again').addEventListener('click', refresh);
+      document.getElementById('copy').addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(keyEl.value);
+          statusEl.textContent = '복사했어요.';
+        } catch {
+          keyEl.select();
+          statusEl.textContent = '키를 선택했어요. Ctrl+C(⌘C)로 복사하세요.';
+        }
+      });
+      keyEl.addEventListener('focus', () => keyEl.select());
+      refresh();
+    </script>
+  </body>
+</html>

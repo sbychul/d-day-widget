@@ -79,5 +79,6 @@ gh repo create d-day-widget --public --source . --push
 구성은 다음과 같습니다.
 - `index.html`, `src/`: 화면(Vite, TypeScript, 의존성 없음)
 - `api/events.ts`: Notion API 중계 함수
+- `public/keygen.html`: 접근 키 생성 페이지(README 5단계 버튼). 정적 파일이며, CSP로 네트워크 요청을 모두 막는다.
 
 > 배포에 비밀값 파일이 올라가지 않도록 `.vercelignore`가 `.env*`를 제외합니다. CLI 배포(`vercel --prod`)는 이 파일이 없으면 로컬 `.env`까지 업로드하고, 서버가 그 값을 사용합니다.

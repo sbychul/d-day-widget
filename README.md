@@ -65,19 +65,23 @@ Notion 페이지에 임베드하는 D-day 위젯입니다. 입력칸에 `12/25 �
 
 > 주의: 데이터베이스가 들어 있는 **부모 페이지의 ID**와 **데이터 소스 ID**는 다른 값입니다. 반드시 **데이터베이스 ID**를 쓰세요.
 
-## 5. 접근 키 정하기
+## 5. 접근 키 만들기
 
-위젯 주소를 아는 사람이 내 일정을 보거나 고치지 못하도록, 나만 아는 **접근 키**를 정합니다.
+위젯 주소를 아는 사람이 내 일정을 보거나 고치지 못하도록, 나만 아는 **접근 키**를 만듭니다. 사이트 비밀번호 같은 것입니다.
 
-- **영문 대소문자와 숫자로만** 32자 이상, 남이 추측할 수 없게 정합니다. 비밀번호 관리자의 생성 기능을 쓰면 편합니다.
-- 예시 형태(그대로 쓰지 마세요): `q8ZtR2vLx0mN4pWc7HsJ1kYb9DfGe3Ua`
-- 이 키는 6단계 배포와 7단계 임베드 주소에 씁니다. 메모해 두세요.
+[![접근 키 만들기](https://img.shields.io/badge/%EC%A0%91%EA%B7%BC%20%ED%82%A4-%EB%A7%8C%EB%93%A4%EA%B8%B0-2383E2?style=for-the-badge)](https://d-day-widget.vercel.app/keygen.html)
+
+1. 위 버튼을 누르면 32자 무작위 키가 만들어집니다. 키는 내 브라우저 안에서만 만들어지고 어디에도 전송되지 않습니다.
+2. **복사**를 누르고 메모해 둡니다. 페이지를 닫으면 같은 키를 다시 볼 수 없습니다.
+3. 이 키는 6단계 배포의 `WIDGET_KEY`와 7단계 임베드 주소의 `?key=`에 **똑같이** 넣습니다.
+
+직접 정해도 됩니다. **영문 대소문자와 숫자로만** 32자 이상, 남이 추측할 수 없게 정하세요.
 
 ## 6. 내 위젯 배포하기
 
 아래 버튼을 누르면 Vercel이 위젯을 내 계정에 복사하고 배포까지 알아서 합니다. 코드나 터미널은 필요 없습니다.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsbychul%2Fd-day-widget&project-name=d-day-widget&repository-name=d-day-widget&env=NOTION_TOKEN,NOTION_DB_ID,WIDGET_KEY&envDescription=NOTION_TOKEN%3A%201%EB%8B%A8%EA%B3%84%EC%9D%98%20API%20%ED%86%A0%ED%81%B0%20/%20NOTION_DB_ID%3A%204%EB%8B%A8%EA%B3%84%EC%9D%98%20%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4%20ID%20/%20WIDGET_KEY%3A%205%EB%8B%A8%EA%B3%84%EC%97%90%EC%84%9C%20%EC%A0%95%ED%95%9C%20%EC%A0%91%EA%B7%BC%20%ED%82%A4)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsbychul%2Fd-day-widget&project-name=d-day-widget&repository-name=d-day-widget&env=NOTION_TOKEN,NOTION_DB_ID,WIDGET_KEY&envDescription=NOTION_TOKEN%3A%201%EB%8B%A8%EA%B3%84%EC%9D%98%20API%20%ED%86%A0%ED%81%B0%20/%20NOTION_DB_ID%3A%204%EB%8B%A8%EA%B3%84%EC%9D%98%20%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4%20ID%20/%20WIDGET_KEY%3A%205%EB%8B%A8%EA%B3%84%EC%97%90%EC%84%9C%20%EB%A7%8C%EB%93%A0%20%EC%A0%91%EA%B7%BC%20%ED%82%A4)
 
 1. 버튼을 누르고 GitHub 계정으로 Vercel에 로그인합니다. Vercel 계정이 없으면 이때 만들어집니다(무료).
 2. 저장소 이름은 그대로 두고 **Create**를 누릅니다. 내 GitHub에 위젯 사본이 만들어집니다.
@@ -87,7 +91,7 @@ Notion 페이지에 임베드하는 D-day 위젯입니다. 입력칸에 `12/25 �
    |---|---|
    | `NOTION_TOKEN` | 1단계의 API 토큰 |
    | `NOTION_DB_ID` | 4단계의 데이터베이스 ID |
-   | `WIDGET_KEY` | 5단계에서 정한 접근 키 |
+   | `WIDGET_KEY` | 5단계에서 만든 접근 키 |
 
 4. **Deploy**를 누릅니다. 1분 정도 지나면 배포 완료 화면에 내 위젯 주소가 나옵니다. `d-day-widget.vercel.app`은 이미 쓰이고 있으므로, Vercel이 뒤에 문자를 자동으로 붙인 주소를 줍니다(예: `https://d-day-widget-abc12.vercel.app`). 나중에는 Vercel 프로젝트의 **Settings → Domains**에서 다시 볼 수 있습니다.
 
@@ -98,7 +102,7 @@ Notion 페이지에 임베드하는 D-day 위젯입니다. 입력칸에 `12/25 �
 1. 위젯을 넣을 Notion 페이지에서 `/임베드`(또는 `/embed`)를 입력합니다.
 2. 6단계의 위젯 주소 뒤에 `?key=접근키`를 붙여서 넣고 **링크 임베드**를 누릅니다.
    ```
-   https://내_위젯_주소.vercel.app/?key=5단계에서_정한_접근_키
+   https://내_위젯_주소.vercel.app/?key=5단계에서_만든_접근_키
    ```
    위젯에 `위젯 주소의 key가 없거나 틀렸어요`가 나오면 키를 다시 확인하세요.
 3. 블록 아래쪽 가장자리를 끌어서 높이를 조절합니다. 목록이 길면 위젯 안에서 스크롤됩니다.
