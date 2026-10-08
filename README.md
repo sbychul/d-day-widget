@@ -83,7 +83,7 @@ You can also pick your own: at least 32 characters, **letters and digits only**,
 
 Click the button below and Vercel copies the widget to your account and deploys it. No code or terminal needed.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsbychul%2Fd-day-widget&project-name=d-day-widget&repository-name=d-day-widget&env=NOTION_TOKEN,NOTION_DB_ID,WIDGET_KEY&envDescription=NOTION_TOKEN%3A%20API%20token%20from%20step%201%20%2F%20NOTION_DB_ID%3A%20database%20ID%20from%20step%204%20%2F%20WIDGET_KEY%3A%20access%20key%20from%20step%205)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsbychul%2Fnotion-dday-widget&project-name=d-day-widget&repository-name=notion-dday-widget&env=NOTION_TOKEN,NOTION_DB_ID,WIDGET_KEY&envDescription=NOTION_TOKEN%3A%20API%20token%20from%20step%201%20%2F%20NOTION_DB_ID%3A%20database%20ID%20from%20step%204%20%2F%20WIDGET_KEY%3A%20access%20key%20from%20step%205)
 
 1. Click the button and sign in to Vercel with your GitHub account. If you don't have a Vercel account, one is created now (free).
 2. Leave the repository name as is and click **Create**. A copy of the widget is created in your GitHub.

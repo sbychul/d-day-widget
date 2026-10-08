@@ -34,10 +34,10 @@
 
 ## GitHub에 올리기
 
-1. GitHub에서 새 저장소를 만듭니다(예: `d-day-widget`). README 등은 추가하지 않습니다. README의 **Deploy with Vercel** 버튼을 쓰려면 저장소가 **Public**이어야 합니다. 버튼 링크의 `<OWNER>`도 실제 계정명으로 바꿉니다.
+1. GitHub에서 새 저장소를 만듭니다(예: `notion-dday-widget`). README 등은 추가하지 않습니다. README의 **Deploy with Vercel** 버튼을 쓰려면 저장소가 **Public**이어야 합니다. 버튼 링크의 `<OWNER>`도 실제 계정명으로 바꿉니다.
 2. 프로젝트 폴더에서 원격 저장소를 연결하고 push합니다.
    ```bash
-   git remote add origin https://github.com/<내 아이디>/d-day-widget.git
+   git remote add origin https://github.com/<내 아이디>/notion-dday-widget.git
    ```
    ```bash
    git push -u origin main
@@ -45,7 +45,7 @@
 
 GitHub CLI(`gh`)가 있다면 1–2단계를 한 번에 할 수 있습니다.
 ```bash
-gh repo create d-day-widget --public --source . --push
+gh repo create notion-dday-widget --public --source . --push
 ```
 
 ## Vercel에 직접 배포하기
