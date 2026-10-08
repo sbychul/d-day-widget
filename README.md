@@ -22,11 +22,11 @@ A D-day widget you embed in a Notion page. Type something like `12/25 Christmas`
 
 Get the API token the widget uses to access Notion.
 
-1. Open Notion **Settings**, type `Developer mode` in the search box, and turn **Developer mode** on.
-2. Go to **Settings → Features → Connections**, click **Add connection**, and choose **Developer connection**.
-3. On the **New connection** screen, fill in the following and create it.
+1. Open Notion **Settings**, search for `developer`, and turn on **Enable developer features**.
+2. Go to **Settings → Features → Connections**, click **Add connection**, and choose **Developer connection**. You are taken to the **Developer tools** screen.
+3. Click **New connection**, fill in the following, and create it.
    - Connection name: anything (e.g. `D-day Widget`)
-   - Authentication: **API token**
+   - Authentication method: **API token**
 4. Copy the issued **API token** (it starts with `ntn_`).
 5. Click the connection you just made and check that all three of these are enabled under **Capabilities**.
    - Read content
@@ -42,21 +42,21 @@ Get the API token the widget uses to access Notion.
 
    | Property name | Type |
    |---|---|
-   | `Name` | Title (the default title property; keep or rename it to `Name`) |
-   | `Date` | Date |
+   | `Name` | Title (the default title property is already `Name`; leave it as is) |
+   | `Date` | Date (click **Add property**, choose **Date**, and name it `Date`) |
 
    Other properties are fine to have.
 
 ## 3. Add the connection to the database
 
-1. Click **`⋯`** at the top right of the database page → **Connections**.
+1. Click **`⋯`** at the top right of the database page → **More** → **Connections**.
 2. Search for the connection from step 1 and add it.
 
 ## 4. Find the database ID
 
 Use whichever method is easier. Hyphens (`-`) are optional.
 
-- **Copy database ID** from the database menu
+- At the very bottom of the database page, find **DATABASE** with the ID next to it, and click its copy button
 - Open the database as a full page and copy it from the address bar. The URL looks like one of these:
   ```
   https://www.notion.so/<workspace>/1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d?v=...
@@ -101,15 +101,15 @@ Click the button below and Vercel copies the widget to your account and deploys 
 
 ## 7. Embed it in Notion
 
-1. On the Notion page where you want the widget, type `/embed`.
-2. Paste your widget URL from step 6 with `?key=<access key>` appended, then click **Embed link**.
+1. On the Notion page where you want the widget, type `/embed`. The **Link** tab opens by default.
+2. Paste your widget URL from step 6 with `?key=<access key>` appended, then confirm.
    ```
    https://your-widget.vercel.app/?key=ACCESS_KEY_FROM_STEP_5
    ```
    If the widget shows `The key in the widget URL is missing or wrong`, check the key again.
 3. Drag the bottom edge of the block to adjust its height. Long lists scroll inside the widget.
 
-> Dark mode tip: the widget follows your **system (OS/browser) setting**. If you pin Notion's theme to dark, the widget's colors may not match. Set Notion **Settings → Theme** to **Use system setting** to keep them in sync.
+> Dark mode tip: the widget follows your **system (OS/browser) setting**. If you pin Notion's theme to dark, the widget's colors may not match. Set Notion **Settings → Preferences → Appearance → Theme** to **Use system setting** to keep them in sync.
 
 ---
 
