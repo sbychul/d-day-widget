@@ -102,7 +102,7 @@ Click the button below and Vercel copies the widget to your account and deploys 
 ## 7. Embed it in Notion
 
 1. On the Notion page where you want the widget, type `/embed`. The **Link** tab opens by default.
-2. Paste your widget URL from step 6 with `?key=<access key>` appended, then confirm.
+2. Paste your widget URL from step 6 with `?key=<access key>` appended, then click **Embed Link**.
    ```
    https://your-widget.vercel.app/?key=ACCESS_KEY_FROM_STEP_5
    ```
