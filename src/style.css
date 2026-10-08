@@ -20,7 +20,7 @@
     --placeholder: #7d7a75;
     --divider: #383836;
     --hover: #262626;
-    --highlight: #28456c;
+    --highlight: #1f2f40;
     --error: #df5452;
   }
 }
@@ -240,15 +240,53 @@ body {
   color: var(--placeholder);
 }
 
-.status {
+/* Status line sits above the input, so showing it shrinks the list instead of moving the input. */
+.composer {
   flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 24px;
+  padding-left: 8px;
+}
+
+.status-row[hidden],
+.cancel[hidden] {
+  display: none;
+}
+
+.status {
+  min-width: 0;
   margin: 0;
   font-size: 12px;
   color: var(--sub);
 }
 
-.status:empty {
-  display: none;
+/* Always filled: touch devices have no hover to reveal it as a button. */
+.cancel {
+  flex: none;
+  height: 24px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--hover);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--sub);
+  cursor: pointer;
+}
+
+.cancel:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 
 .status.error {

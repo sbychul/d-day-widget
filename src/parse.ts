@@ -5,11 +5,11 @@ export type ParseResult =
 export const TITLE_MAX = 200;
 
 export const ERR = {
-  noDate: '날짜를 알아볼 수 없어요 (예: 12/25 크리스마스)',
-  invalid: '없는 날짜예요',
-  past: '이미 지난 날짜예요',
-  noTitle: '일정명을 입력해 주세요',
-  tooLong: `일정명은 ${TITLE_MAX}자까지 쓸 수 있어요`,
+  noDate: "Couldn't read the date (e.g. 12/25 Christmas)",
+  invalid: "That date doesn't exist",
+  past: 'That date has already passed',
+  noTitle: 'Enter an event name',
+  tooLong: `Event name must be ${TITLE_MAX} characters or fewer`,
 } as const;
 
 type Parts = { y?: number; m: number; d: number };
@@ -42,7 +42,7 @@ export function titleLength(title: string): number {
   return [...title].length;
 }
 
-/** Parses `날짜 일정명`. `today` is the viewer's local date as YYYY-MM-DD. */
+/** Parses `<date> <title>`. `today` is the viewer's local date as YYYY-MM-DD. */
 export function parseInput(input: string, today: string): ParseResult {
   const text = input.trim();
   for (const [re, toParts] of PATTERNS) {
@@ -81,8 +81,8 @@ export function localToday(now = new Date()): string {
   return iso(now.getFullYear(), now.getMonth() + 1, now.getDate());
 }
 
-/** `2026.10.07 (수)` */
+/** `2026.10.07 (Wed)` */
 export function formatToday(now = new Date()): string {
-  const day = '일월화수목금토'[now.getDay()];
+  const day = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][now.getDay()];
   return `${now.getFullYear()}.${pad(now.getMonth() + 1)}.${pad(now.getDate())} (${day})`;
 }

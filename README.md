@@ -1,157 +1,159 @@
 # D-day Widget
 
-Notion 페이지에 임베드하는 D-day 위젯입니다. 입력칸에 `12/25 크리스마스`처럼 쓰고 Enter를 누르면 일정이 Notion 데이터베이스에 저장됩니다. 가장 임박한 일정은 크게, 나머지는 그 아래 목록으로 보여줍니다.
+**English** | [한국어](README.ko.md)
 
-<!-- 스크린샷 자리: 배포 후 Notion에 임베드한 모습을 docs/screenshot.png로 넣고 아래 줄 주석을 해제하세요. -->
-<!-- ![D-day 위젯](docs/screenshot.png) -->
+A D-day widget you embed in a Notion page. Type something like `12/25 Christmas` in the input and press Enter, and the event is saved to a Notion database. The closest event is shown large, with the rest listed below it.
 
-- Notion 기본 글꼴과 색을 그대로 써서, 페이지 본문과 자연스럽게 섞입니다.
-- 라이트/다크 모드는 시스템 설정을 따릅니다.
-- 날짜가 지난 일정은 Notion에서 자동으로 보관됩니다. 보관된 일정은 휴지통에서 복구할 수 있습니다.
+<!-- Screenshot placeholder: after deploying, save a capture of the widget embedded in Notion as docs/screenshot.png and uncomment the line below. -->
+<!-- ![D-day widget](docs/screenshot.png) -->
 
-## 준비물
+- Uses Notion's default fonts and colors, so it blends into the page.
+- Light/dark mode follows your system setting.
+- Past events are archived in Notion automatically. You can restore them from the trash.
 
-- Notion 계정
-- GitHub 계정 (6단계에서 Vercel 로그인과 위젯 사본 보관에 씁니다. 무료)
+## What you need
+
+- A Notion account
+- A GitHub account (used in step 6 to sign in to Vercel and to hold your copy of the widget; free)
 
 ---
 
-## 1. Notion API 연결 만들기
+## 1. Create a Notion API connection
 
-위젯이 Notion에 접근할 때 쓰는 API 토큰을 발급받습니다.
+Get the API token the widget uses to access Notion.
 
-1. Notion **설정**을 열고 검색창에 `개발자 모드`를 입력한 뒤 **개발자 모드**를 켭니다.
-2. **설정 → 기능 → 연결**로 이동해 **연결 추가하기**를 누르고, **개발자 연결**을 선택합니다.
-3. **신규 연결** 화면에서 다음과 같이 입력하고 생성합니다.
-   - 연결 이름: 아무거나 (예: `D-day Widget`)
-   - 인증 방법: **API 토큰**
-4. 발급된 **API 토큰**을 복사해 둡니다(`ntn_`으로 시작).
-5. 방금 만든 연결을 클릭하고, **기능**에서 다음 세 가지가 모두 켜져 있는지 확인합니다.
-   - 콘텐츠 읽기
-   - 콘텐츠 업데이트
-   - 콘텐츠 삽입
+1. Open Notion **Settings**, type `Developer mode` in the search box, and turn **Developer mode** on.
+2. Go to **Settings → Features → Connections**, click **Add connection**, and choose **Developer connection**.
+3. On the **New connection** screen, fill in the following and create it.
+   - Connection name: anything (e.g. `D-day Widget`)
+   - Authentication: **API token**
+4. Copy the issued **API token** (it starts with `ntn_`).
+5. Click the connection you just made and check that all three of these are enabled under **Capabilities**.
+   - Read content
+   - Update content
+   - Insert content
 
-> 이 토큰은 비밀번호와 같습니다. 다른 사람에게 보여주거나 공개된 곳에 붙여넣지 마세요.
+> This token works like a password. Don't show it to anyone or paste it anywhere public.
 
-## 2. 위젯 전용 데이터베이스 만들기
+## 2. Create a database for the widget
 
-1. Notion에서 새 페이지를 만들고 `/데이터베이스`를 입력합니다. **데이터베이스 - 전체 페이지**를 고르는 것을 권장합니다. 인라인도 됩니다.
-2. 속성을 다음과 같이 **정확히** 맞춥니다. 이름이 한 글자라도 다르면 동작하지 않습니다.
+1. Create a new page in Notion and type `/database`. **Database - Full page** is recommended, but inline works too.
+2. Set up the properties **exactly** as below. Names are case-sensitive; if even one character differs, the widget won't work.
 
-   | 속성 이름 | 유형 |
+   | Property name | Type |
    |---|---|
-   | `이름` | 제목 (기본으로 있는 제목 속성의 이름을 `이름`으로 둡니다) |
-   | `날짜` | 날짜 |
+   | `Name` | Title (the default title property; keep or rename it to `Name`) |
+   | `Date` | Date |
 
-   다른 속성은 있어도 상관없습니다.
+   Other properties are fine to have.
 
-## 3. 데이터베이스에 연결 추가하기
+## 3. Add the connection to the database
 
-1. 데이터베이스 페이지 오른쪽 위의 **`⋯`** → **연결**(Connections)을 누릅니다.
-2. 1단계에서 만든 연결을 검색해서 추가합니다.
+1. Click **`⋯`** at the top right of the database page → **Connections**.
+2. Search for the connection from step 1 and add it.
 
-## 4. 데이터베이스 ID 찾기
+## 4. Find the database ID
 
-다음 중 편한 방법을 쓰세요. 하이픈(`-`)이 있어도 없어도 됩니다.
+Use whichever method is easier. Hyphens (`-`) are optional.
 
-- 데이터베이스 메뉴의 **데이터베이스 ID 복사**
-- 데이터베이스를 전체 페이지로 열고 주소창에서 복사합니다. 주소는 다음 두 형태 중 하나입니다.
+- **Copy database ID** from the database menu
+- Open the database as a full page and copy it from the address bar. The URL looks like one of these:
   ```
-  https://www.notion.so/<워크스페이스>/1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d?v=...
+  https://www.notion.so/<workspace>/1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d?v=...
   https://app.notion.com/p/1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d?v=...
-                           └────────── 데이터베이스 ID ──────────┘
+                           └─────────── database ID ───────────┘
   ```
-  `?v=` **앞**의 32자리가 데이터베이스 ID입니다. `?v=` 뒤는 보기(view) ID라서 쓰지 않습니다.
+  The 32 characters **before** `?v=` are the database ID. The part after `?v=` is the view ID and isn't used.
 
-> 주의: 데이터베이스가 들어 있는 **부모 페이지의 ID**와 **데이터 소스 ID**는 다른 값입니다. 반드시 **데이터베이스 ID**를 쓰세요.
+> Note: the **parent page ID** and the **data source ID** are different values. Make sure you use the **database ID**.
 
-## 5. 접근 키 만들기
+## 5. Generate an access key
 
-위젯 주소를 아는 사람이 내 일정을 보거나 고치지 못하도록, 나만 아는 **접근 키**를 만듭니다. 사이트 비밀번호 같은 것입니다.
+Create an **access key** only you know, so people who learn the widget URL can't see or change your events. Think of it as a password for the site.
 
-[![접근 키 만들기](https://img.shields.io/badge/%EC%A0%91%EA%B7%BC%20%ED%82%A4-%EB%A7%8C%EB%93%A4%EA%B8%B0-2383E2?style=for-the-badge)](https://d-day-widget.vercel.app/keygen.html)
+[![Generate access key](https://img.shields.io/badge/Access%20key-Generate-2383E2?style=for-the-badge)](https://d-day-widget.vercel.app/keygen.html)
 
-1. 위 버튼을 누르면 32자 무작위 키가 만들어집니다. 키는 내 브라우저 안에서만 만들어지고 어디에도 전송되지 않습니다.
-2. **복사**를 누르고 메모해 둡니다. 페이지를 닫으면 같은 키를 다시 볼 수 없습니다.
-3. 이 키는 6단계 배포의 `WIDGET_KEY`와 7단계 임베드 주소의 `?key=`에 **똑같이** 넣습니다.
+1. Click the button above to generate a random 32-character key. The key is generated only in your browser and never sent anywhere.
+2. Click **Copy** and save it somewhere. Once you close the page, you can't see the same key again.
+3. Use this key, **exactly the same**, as `WIDGET_KEY` in step 6 and as `?key=` in the embed URL in step 7.
 
-직접 정해도 됩니다. **영문 대소문자와 숫자로만** 32자 이상, 남이 추측할 수 없게 정하세요.
+You can also pick your own: at least 32 characters, **letters and digits only**, and hard to guess.
 
-## 6. 내 위젯 배포하기
+## 6. Deploy your widget
 
-아래 버튼을 누르면 Vercel이 위젯을 내 계정에 복사하고 배포까지 알아서 합니다. 코드나 터미널은 필요 없습니다.
+Click the button below and Vercel copies the widget to your account and deploys it. No code or terminal needed.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsbychul%2Fd-day-widget&project-name=d-day-widget&repository-name=d-day-widget&env=NOTION_TOKEN,NOTION_DB_ID,WIDGET_KEY&envDescription=NOTION_TOKEN%3A%201%EB%8B%A8%EA%B3%84%EC%9D%98%20API%20%ED%86%A0%ED%81%B0%20/%20NOTION_DB_ID%3A%204%EB%8B%A8%EA%B3%84%EC%9D%98%20%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4%20ID%20/%20WIDGET_KEY%3A%205%EB%8B%A8%EA%B3%84%EC%97%90%EC%84%9C%20%EB%A7%8C%EB%93%A0%20%EC%A0%91%EA%B7%BC%20%ED%82%A4)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsbychul%2Fd-day-widget&project-name=d-day-widget&repository-name=d-day-widget&env=NOTION_TOKEN,NOTION_DB_ID,WIDGET_KEY&envDescription=NOTION_TOKEN%3A%20API%20token%20from%20step%201%20%2F%20NOTION_DB_ID%3A%20database%20ID%20from%20step%204%20%2F%20WIDGET_KEY%3A%20access%20key%20from%20step%205)
 
-1. 버튼을 누르고 GitHub 계정으로 Vercel에 로그인합니다. Vercel 계정이 없으면 이때 만들어집니다(무료).
-2. 저장소 이름은 그대로 두고 **Create**를 누릅니다. 내 GitHub에 위젯 사본이 만들어집니다.
-3. 환경변수 세 칸을 채웁니다.
+1. Click the button and sign in to Vercel with your GitHub account. If you don't have a Vercel account, one is created now (free).
+2. Leave the repository name as is and click **Create**. A copy of the widget is created in your GitHub.
+3. Fill in the three environment variables.
 
-   | 이름 | 값 |
+   | Name | Value |
    |---|---|
-   | `NOTION_TOKEN` | 1단계의 API 토큰 |
-   | `NOTION_DB_ID` | 4단계의 데이터베이스 ID |
-   | `WIDGET_KEY` | 5단계에서 만든 접근 키 |
+   | `NOTION_TOKEN` | API token from step 1 |
+   | `NOTION_DB_ID` | Database ID from step 4 |
+   | `WIDGET_KEY` | Access key from step 5 |
 
-4. **Deploy**를 누릅니다. 1분 정도 지나면 배포 완료 화면에 내 위젯 주소가 나옵니다. `d-day-widget.vercel.app`은 이미 쓰이고 있으므로, Vercel이 뒤에 문자를 자동으로 붙인 주소를 줍니다(예: `https://d-day-widget-abc12.vercel.app`). 나중에는 Vercel 프로젝트의 **Settings → Domains**에서 다시 볼 수 있습니다.
+4. Click **Deploy**. After about a minute, the success screen shows your widget URL. `d-day-widget.vercel.app` is already taken, so Vercel adds characters to the end automatically (e.g. `https://d-day-widget-abc12.vercel.app`). You can find it later under **Settings → Domains** in your Vercel project.
 
-> 값을 잘못 넣었다면 Vercel 프로젝트의 **Settings → Environment Variables**에서 고친 뒤, **Deployments**에서 최신 배포를 **Redeploy**하세요.
+> If you entered a wrong value, fix it in **Settings → Environment Variables** of your Vercel project, then **Redeploy** the latest deployment from **Deployments**.
 
-## 7. Notion에 임베드하기
+## 7. Embed it in Notion
 
-1. 위젯을 넣을 Notion 페이지에서 `/임베드`(또는 `/embed`)를 입력합니다.
-2. 6단계의 위젯 주소 뒤에 `?key=접근키`를 붙여서 넣고 **링크 임베드**를 누릅니다.
+1. On the Notion page where you want the widget, type `/embed`.
+2. Paste your widget URL from step 6 with `?key=<access key>` appended, then click **Embed link**.
    ```
-   https://내_위젯_주소.vercel.app/?key=5단계에서_만든_접근_키
+   https://your-widget.vercel.app/?key=ACCESS_KEY_FROM_STEP_5
    ```
-   위젯에 `위젯 주소의 key가 없거나 틀렸어요`가 나오면 키를 다시 확인하세요.
-3. 블록 아래쪽 가장자리를 끌어서 높이를 조절합니다. 목록이 길면 위젯 안에서 스크롤됩니다.
+   If the widget shows `The key in the widget URL is missing or wrong`, check the key again.
+3. Drag the bottom edge of the block to adjust its height. Long lists scroll inside the widget.
 
-> 다크 모드 팁: 위젯은 **시스템(OS/브라우저) 설정**을 따릅니다. Notion 테마를 직접 다크로 고정해 두면 위젯과 색이 어긋날 수 있습니다. Notion **설정 → 테마**를 **시스템 설정 사용**으로 두면 항상 맞습니다.
+> Dark mode tip: the widget follows your **system (OS/browser) setting**. If you pin Notion's theme to dark, the widget's colors may not match. Set Notion **Settings → Theme** to **Use system setting** to keep them in sync.
 
 ---
 
-## 사용법
+## Usage
 
-### 일정 추가
+### Add an event
 
-입력칸에 `날짜 일정명`을 쓰고 Enter를 누릅니다. 날짜와 일정명 사이에는 **공백이 꼭 있어야** 합니다.
+Type `<date> <event name>` in the input and press Enter. There **must be a space** between the date and the name.
 
-| 형식 | 예 |
+| Format | Example |
 |---|---|
-| 월/일 (`/` `-` `.` 모두 가능) | `12/25 크리스마스`, `12-25 …`, `12.25 …` |
-| 연-월-일 | `2026-12-25 …`, `26-12-25 …` |
-| 숫자만 | `1225 …` (월일), `261225 …` (연월일) |
-| 한국어 | `12월 25일 …`, `2026년 12월 25일 …` |
+| Month/day (`/`, `-`, `.` all work) | `12/25 Christmas`, `12-25 …`, `12.25 …` |
+| Year-month-day | `2026-12-25 …`, `26-12-25 …` |
+| Digits only | `1225 …` (MMDD), `261225 …` (YYMMDD) |
+| Korean | `12월 25일 …`, `2026년 12월 25일 …` |
 
-- 연도를 생략하면 올해로 넣습니다. 올해 날짜가 이미 지났으면 내년으로 넣습니다. 오늘 날짜는 `D-Day`로 표시됩니다.
-- 연도를 직접 적었는데 지난 날짜면 추가되지 않습니다.
-- 일정명은 최대 200자입니다.
+- Without a year, this year is used. If the date has already passed this year, next year is used. Today shows as `D-Day`.
+- If you give a year and the date has already passed, it isn't added.
+- Event names can be up to 200 characters.
 
-### 수정
+### Edit
 
-일정(메인 포함)을 클릭하면 입력칸에 `2026-12-25 크리스마스` 형태로 내용이 채워집니다. 고친 뒤 Enter를 누르면 저장되고, **Esc**를 누르면 취소됩니다. 키보드로는 일정에 포커스를 두고 Enter를 누르면 됩니다.
+Click an event (including the large one) and the input fills with its contents, like `2026-12-25 Christmas`. Press Enter to save, or press the **Cancel** button above the input (or Esc) to cancel. With a keyboard, focus an event and press Enter.
 
-### 삭제
+### Delete
 
-일정에 마우스를 올리면 `×`가 나타납니다. 모바일에서는 항상 보입니다.
-1. `×`를 누르면 `삭제?`로 바뀝니다.
-2. 3초 안에 한 번 더 누르면 삭제됩니다.
+Hover over an event to reveal `×`. On mobile it's always visible.
+1. Click `×` and it changes to `Delete?`.
+2. Click it again within 3 seconds to delete.
 
-삭제한 일정은 Notion 휴지통으로 가며, 30일 동안 복구할 수 있습니다.
+Deleted events go to the Notion trash and can be restored for 30 days.
 
-### 자동 정리와 갱신
+### Automatic cleanup and refresh
 
-- 날짜가 지난 일정은 다음에 위젯을 열 때 Notion에서 자동으로 보관됩니다. Notion 휴지통에서 복구할 수 있습니다.
-- 다른 기기나 Notion에서 직접 고친 내용은 위젯 탭으로 돌아오거나 자정이 지나면 다시 불러옵니다.
+- Past events are archived in Notion the next time the widget opens. You can restore them from the Notion trash.
+- Changes made on another device or directly in Notion are loaded when you come back to the widget tab, or after midnight.
 
-## 주의
+## Caveats
 
-- **접근 키는 임베드 주소에 들어 있습니다.** Notion 페이지를 볼 수 있는 사람은 임베드 주소도 볼 수 있으므로, 위젯이 있는 페이지를 **웹에 게시하거나 다른 사람과 공유하지 마세요.**
-- 키가 노출됐다면 Vercel 프로젝트의 **Settings → Environment Variables**에서 `WIDGET_KEY`를 새 값으로 바꾸고 **Redeploy**한 뒤, Notion 임베드 주소의 `?key=`도 새 값으로 바꾸세요. 이전 키는 더 이상 동작하지 않습니다.
-- 원본 위젯이 업데이트돼도 내 사본에는 자동으로 반영되지 않습니다.
-- 위젯 데이터의 원본은 Notion 데이터베이스입니다. Notion에서 직접 추가하거나 고쳐도 됩니다. 단, `날짜`가 비어 있는 항목은 위젯에 나오지 않습니다.
+- **The access key is part of the embed URL.** Anyone who can view the Notion page can also see the embed URL, so **don't publish the page with the widget to the web or share it with others.**
+- If the key leaks, change `WIDGET_KEY` to a new value in **Settings → Environment Variables** of your Vercel project and **Redeploy**, then update `?key=` in your Notion embed URL as well. The old key stops working.
+- Updates to the original widget are not applied to your copy automatically.
+- The Notion database is the source of truth for the widget's data. You can add or edit events directly in Notion too, but items with an empty `Date` don't appear in the widget.
 
-## 개발자용
+## For developers
 
-직접 고치거나 실행해 보려면 [docs/development.md](docs/development.md)를 보세요.
+To modify or run it yourself, see [docs/development.md](docs/development.md).

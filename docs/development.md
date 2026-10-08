@@ -1,6 +1,6 @@
 # 개발 가이드
 
-위젯을 직접 실행하거나 고치거나 배포하는 사람을 위한 문서입니다. 사용자용 안내는 [README](../README.md)에 있습니다. AI 에이전트 작업 규칙은 [AGENTS.md](../AGENTS.md), 상세 규격은 [spec](../.scratch/d-day-widget/spec.md)에 있습니다.
+위젯을 직접 실행하거나 고치거나 배포하는 사람을 위한 문서입니다. 사용자용 안내는 [README](../README.ko.md)에 있습니다. AI 에이전트 작업 규칙은 [AGENTS.md](../AGENTS.md), 상세 규격은 [spec](../.scratch/d-day-widget/spec.md)에 있습니다.
 
 준비물: Node.js 22.12 이상, Vercel 계정, Notion API 토큰·데이터베이스 ID·접근 키(README 1–5단계).
 
@@ -57,9 +57,9 @@ gh repo create d-day-widget --public --source . --push
 
    | Key | Value |
    |---|---|
-   | `NOTION_TOKEN` | Notion API 토큰 ([README 1단계](../README.md)) |
-   | `NOTION_DB_ID` | 데이터베이스 ID ([README 4단계](../README.md)) |
-   | `WIDGET_KEY` | 접근 키 ([README 5단계](../README.md)) |
+   | `NOTION_TOKEN` | Notion API 토큰 ([README 1단계](../README.ko.md)) |
+   | `NOTION_DB_ID` | 데이터베이스 ID ([README 4단계](../README.ko.md)) |
+   | `WIDGET_KEY` | 접근 키 ([README 5단계](../README.ko.md)) |
 
 4. **Deploy**를 누릅니다. 끝나면 `https://<프로젝트이름>.vercel.app` 같은 주소가 생깁니다.
 

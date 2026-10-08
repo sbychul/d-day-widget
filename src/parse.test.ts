@@ -104,5 +104,5 @@ describe('ddays / dLabel', () => {
 describe('localToday / formatToday', () => {
   const d = new Date(2026, 9, 7, 23, 59);
   it('uses local calendar date', () => expect(localToday(d)).toBe('2026-10-07'));
-  it('formats with weekday', () => expect(formatToday(d)).toBe('2026.10.07 (수)'));
+  it('formats with weekday', () => expect(formatToday(d)).toBe('2026.10.07 (Wed)'));
 });

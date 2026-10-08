@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="ko">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- No network access at all: the key is generated and shown only in this browser. -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'" />
     <meta name="referrer" content="no-referrer" />
-    <title>접근 키 만들기 · D-day Widget</title>
+    <title>Generate Access Key · D-day Widget</title>
     <style>
       :root {
         --bg: #ffffff;
@@ -91,15 +91,15 @@
   </head>
   <body>
     <main>
-      <h1>접근 키 만들기</h1>
-      <p>D-day 위젯의 <code>WIDGET_KEY</code>로 쓸 무작위 키입니다. 이 키는 이 브라우저 안에서만 만들어지며 어디에도 전송되지 않습니다.</p>
-      <input class="key" id="key" readonly aria-label="생성된 접근 키" />
+      <h1>Generate an access key</h1>
+      <p>A random key to use as the D-day widget's <code>WIDGET_KEY</code>. It is generated only in this browser and never sent anywhere.</p>
+      <input class="key" id="key" readonly aria-label="Generated access key" />
       <div class="actions">
-        <button class="primary" id="copy" type="button">복사</button>
-        <button id="again" type="button">다시 만들기</button>
+        <button class="primary" id="copy" type="button">Copy</button>
+        <button id="again" type="button">Regenerate</button>
       </div>
       <p class="status" id="status" aria-live="polite"></p>
-      <p>복사한 키는 Vercel 배포 화면의 <code>WIDGET_KEY</code> 칸과 Notion 임베드 주소의 <code>?key=</code> 뒤에 똑같이 넣으세요. 이 페이지를 닫으면 키는 다시 볼 수 없으니 메모해 두세요.</p>
+      <p>Paste the same key into the <code>WIDGET_KEY</code> field on the Vercel deploy screen and after <code>?key=</code> in your Notion embed URL. Once you close this page the key cannot be shown again, so save it somewhere.</p>
     </main>
     <script>
       const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -127,10 +127,10 @@
       document.getElementById('copy').addEventListener('click', async () => {
         try {
           await navigator.clipboard.writeText(keyEl.value);
-          statusEl.textContent = '복사했어요.';
+          statusEl.textContent = 'Copied.';
         } catch {
           keyEl.select();
-          statusEl.textContent = '키를 선택했어요. Ctrl+C(⌘C)로 복사하세요.';
+          statusEl.textContent = 'Key selected. Press Ctrl+C (⌘C) to copy.';
         }
       });
       keyEl.addEventListener('focus', () => keyEl.select());

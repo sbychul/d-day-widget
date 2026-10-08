@@ -3,13 +3,13 @@ import type { Event } from '../api/events';
 import { dLabel, ddays, formatToday, localToday, parseInput } from './parse';
 
 const MSG = {
-  empty: '일정이 없어요',
-  editing: '수정 중 · Esc로 취소',
-  loadFailed: '불러오지 못했어요',
-  saveFailed: '저장하지 못했어요',
-  deleteFailed: '삭제하지 못했어요',
-  confirm: '삭제?',
-  unauthorized: '위젯 주소의 key가 없거나 틀렸어요',
+  empty: 'No upcoming events',
+  editing: 'Editing',
+  loadFailed: "Couldn't load events",
+  saveFailed: "Couldn't save",
+  deleteFailed: "Couldn't delete",
+  confirm: 'Delete?',
+  unauthorized: 'The key in the widget URL is missing or wrong',
 } as const;
 const CONFIRM_MS = 3000;
 
@@ -19,7 +19,9 @@ const mainEl = $('main');
 const listEl = $('list');
 const form = $<HTMLFormElement>('form');
 const input = $<HTMLInputElement>('input');
+const statusRow = $('status-row');
 const statusEl = $('status');
+const cancelBtn = $<HTMLButtonElement>('cancel');
 
 let events: Event[] = [];
 let editingId: string | null = null;
@@ -87,7 +89,7 @@ function deleteButton(ev: Event) {
   const btn = el('button', confirming ? 'del confirm' : 'del', confirming ? MSG.confirm : '×') as HTMLButtonElement;
   btn.type = 'button';
   btn.dataset.del = ev.id;
-  btn.setAttribute('aria-label', confirming ? `${ev.title} 삭제 확인` : `${ev.title} 삭제`);
+  btn.setAttribute('aria-label', confirming ? `Confirm delete ${ev.title}` : `Delete ${ev.title}`);
   return btn;
 }
 
@@ -107,7 +109,7 @@ function render() {
     mainEl.dataset.id = first.id;
     mainEl.tabIndex = 0;
     mainEl.setAttribute('role', 'button');
-    mainEl.setAttribute('aria-label', `${dLabel(ddays(today, first.date))} ${first.title}, 수정`);
+    mainEl.setAttribute('aria-label', `${dLabel(ddays(today, first.date))} ${first.title}, edit`);
     mainEl.append(
       el('div', 'main-d', dLabel(ddays(today, first.date))),
       el('div', 'main-title ellipsis', first.title),
@@ -136,6 +138,8 @@ function render() {
 
   statusEl.textContent = error || (editingId ? MSG.editing : '');
   statusEl.classList.toggle('error', !!error);
+  cancelBtn.hidden = !editingId;
+  statusRow.hidden = !statusEl.textContent && cancelBtn.hidden;
 
   if (focusDeleteOf) {
     document.querySelector<HTMLButtonElement>(`[data-del="${CSS.escape(focusDeleteOf)}"]`)?.focus();
@@ -161,6 +165,12 @@ async function load() {
 function stopEditing() {
   editingId = null;
   input.value = '';
+}
+
+function cancelEditing() {
+  stopEditing();
+  error = '';
+  render();
 }
 
 function add(date: string, title: string, raw: string) {
@@ -260,11 +270,10 @@ input.addEventListener('input', () => {
 });
 
 input.addEventListener('keydown', (e) => {
-  if (e.key !== 'Escape' || !editingId) return;
-  stopEditing();
-  error = '';
-  render();
+  if (e.key === 'Escape' && editingId) cancelEditing();
 });
+
+cancelBtn.addEventListener('click', cancelEditing);
 
 function onItemClick(e: MouseEvent) {
   const target = e.target as HTMLElement;

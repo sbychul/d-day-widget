@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,11 +13,16 @@
       <hr class="divider" />
       <ul class="list" id="list"></ul>
       <hr class="divider" />
-      <form class="input" id="form" autocomplete="off">
-        <span class="plus" aria-hidden="true">+</span>
-        <input id="input" aria-label="일정 추가" placeholder="12/25 크리스마스" enterkeyhint="done" />
-      </form>
-      <p class="status" id="status" aria-live="polite"></p>
+      <div class="composer">
+        <div class="status-row" id="status-row" hidden>
+          <p class="status" id="status" aria-live="polite"></p>
+          <button type="button" class="cancel" id="cancel" hidden>Cancel</button>
+        </div>
+        <form class="input" id="form" autocomplete="off">
+          <span class="plus" aria-hidden="true">+</span>
+          <input id="input" aria-label="Add event" placeholder="12/25 Christmas" enterkeyhint="done" />
+        </form>
+      </div>
     </main>
     <script type="module" src="/src/main.ts"></script>
   </body>

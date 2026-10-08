@@ -5,8 +5,8 @@ const page = (id: string, title: string, date: string | null, created = '2026-10
   id,
   created_time: created,
   properties: {
-    '이름': { title: title ? [{ plain_text: title }] : [] },
-    '날짜': { date: date ? { start: date } : null },
+    Name: { title: title ? [{ plain_text: title }] : [] },
+    Date: { date: date ? { start: date } : null },
   },
 });
 
@@ -77,7 +77,7 @@ describe('GET', () => {
     expect(calls[1].body.start_cursor).toBe('c2');
     expect(calls[2].body).toEqual({ archived: true });
     expect(calls[0].body.sorts).toEqual([
-      { property: '날짜', direction: 'ascending' },
+      { property: 'Date', direction: 'ascending' },
       { timestamp: 'created_time', direction: 'ascending' },
     ]);
   });
@@ -111,8 +111,8 @@ describe('POST', () => {
     expect(calls[0].body).toEqual({
       parent: { database_id: 'db1' },
       properties: {
-        '이름': { title: [{ text: { content: '크리스마스' } }] },
-        '날짜': { date: { start: '2026-12-25' } },
+        Name: { title: [{ text: { content: '크리스마스' } }] },
+        Date: { date: { start: '2026-12-25' } },
       },
     });
   });

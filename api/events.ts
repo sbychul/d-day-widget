@@ -13,8 +13,8 @@ type NotionPage = {
   id: string;
   created_time: string;
   properties: {
-    '이름'?: { title?: { plain_text: string }[] };
-    '날짜'?: { date?: { start: string } | null };
+    Name?: { title?: { plain_text: string }[] };
+    Date?: { date?: { start: string } | null };
   };
 };
 
@@ -59,15 +59,15 @@ async function notion<T>(path: string, method: string, body?: unknown): Promise<
 }
 
 function toEvent(page: NotionPage): Event | null {
-  const date = page.properties['날짜']?.date?.start?.slice(0, 10);
+  const date = page.properties.Date?.date?.start?.slice(0, 10);
   if (!date) return null;
-  const title = (page.properties['이름']?.title ?? []).map((t) => t.plain_text).join('');
+  const title = (page.properties.Name?.title ?? []).map((t) => t.plain_text).join('');
   return { id: page.id, title, date, created: page.created_time };
 }
 
 const properties = (title: string, date: string) => ({
-  '이름': { title: [{ text: { content: title } }] },
-  '날짜': { date: { start: date } },
+  Name: { title: [{ text: { content: title } }] },
+  Date: { date: { start: date } },
 });
 
 async function queryAll(): Promise<NotionPage[]> {
@@ -79,7 +79,7 @@ async function queryAll(): Promise<NotionPage[]> {
       'POST',
       {
         sorts: [
-          { property: '날짜', direction: 'ascending' },
+          { property: 'Date', direction: 'ascending' },
           { timestamp: 'created_time', direction: 'ascending' },
         ],
         page_size: 100,
