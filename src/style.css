@@ -292,3 +292,81 @@ body {
 .status.error {
   color: var(--error);
 }
+
+/* Motion. Exits are timed in main.ts (EXIT_MS), which removes the element once it has faded. */
+.fade-in {
+  animation: highlight-in 200ms ease-out;
+}
+
+@keyframes highlight-in {
+  from {
+    background: transparent;
+    box-shadow: 0 0 0 4px transparent;
+  }
+}
+
+/* Main block and `Delete?`: rise 4px while fading in; leaving is the reverse. */
+.main.enter,
+.del.enter {
+  animation: rise-in 150ms ease-out;
+}
+
+.main.leave,
+.del.leave {
+  animation: rise-out 150ms ease-in forwards;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+@keyframes rise-out {
+  to {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+/* Rows and the status line also grow from / collapse to zero height, so the rows below and the
+   divider slide instead of jumping. -2px folds the parent's flex gap. */
+.status-row {
+  animation: grow-in 150ms ease-out;
+}
+
+.row.enter {
+  overflow: hidden;
+  animation: grow-in 150ms ease-out;
+}
+
+.row.leave,
+.status-row.leave {
+  overflow: hidden;
+  animation: grow-out 150ms ease-in forwards;
+}
+
+@keyframes grow-in {
+  from {
+    height: 0;
+    margin-bottom: -2px;
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+@keyframes grow-out {
+  to {
+    height: 0;
+    margin-bottom: -2px;
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+  }
+}

@@ -12,6 +12,8 @@ const MSG = {
   unauthorized: 'The key in the widget URL is missing or wrong',
 } as const;
 const CONFIRM_MS = 3000;
+const EXIT_MS = 150; // matches the exit animations in style.css
+const exitDelay = () => (matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : EXIT_MS);
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const todayEl = $('today');
@@ -28,6 +30,15 @@ let editingId: string | null = null;
 let confirmId: string | null = null;
 let confirmTimer: ReturnType<typeof setTimeout> | undefined;
 let focusDeleteOf: string | null = null;
+// Motion. One-shot flags are set by the action that causes the change and cleared after the next render,
+// so a later re-render (reload, delete confirm) doesn't replay them. Leave flags last until the exit ends.
+let fadeInId: string | null = null;
+let enterId: string | null = null;
+let mainEnter = false;
+let confirmEnter = false;
+let confirmLeaving = false;
+let leavingId: string | null = null;
+let statusTimer: ReturnType<typeof setTimeout> | undefined;
 let error = '';
 let pending = 0;
 
@@ -86,7 +97,8 @@ function el(tag: string, className: string, text?: string) {
 
 function deleteButton(ev: Event) {
   const confirming = confirmId === ev.id;
-  const btn = el('button', confirming ? 'del confirm' : 'del', confirming ? MSG.confirm : '×') as HTMLButtonElement;
+  const cls = confirming ? `del confirm${confirmEnter ? ' enter' : ''}${confirmLeaving ? ' leave' : ''}` : 'del';
+  const btn = el('button', cls, confirming ? MSG.confirm : '×') as HTMLButtonElement;
   btn.type = 'button';
   btn.dataset.del = ev.id;
   btn.setAttribute('aria-label', confirming ? `Confirm delete ${ev.title}` : `Delete ${ev.title}`);
@@ -96,6 +108,9 @@ function deleteButton(ev: Event) {
 function stateClass(node: HTMLElement, ev: Event) {
   node.classList.toggle('editing', editingId === ev.id);
   node.classList.toggle('confirming', confirmId === ev.id);
+  node.classList.toggle('fade-in', fadeInId === ev.id);
+  node.classList.toggle('enter', enterId === ev.id);
+  node.classList.toggle('leave', leavingId === ev.id);
 }
 
 function render() {
@@ -124,6 +139,7 @@ function render() {
     mainEl.classList.add('empty');
     mainEl.append(el('div', 'main-title', MSG.empty));
   }
+  mainEl.classList.toggle('enter', mainEnter);
 
   listEl.replaceChildren(
     ...rest.map((ev) => {
@@ -136,10 +152,25 @@ function render() {
     }),
   );
 
-  statusEl.textContent = error || (editingId ? MSG.editing : '');
-  statusEl.classList.toggle('error', !!error);
-  cancelBtn.hidden = !editingId;
-  statusRow.hidden = !statusEl.textContent && cancelBtn.hidden;
+  const status = error || (editingId ? MSG.editing : '');
+  if (status) {
+    clearTimeout(statusTimer);
+    statusRow.classList.remove('leave');
+    statusRow.hidden = false;
+    statusEl.textContent = status;
+    statusEl.classList.toggle('error', !!error);
+    cancelBtn.hidden = !editingId;
+  } else if (!statusRow.hidden && !statusRow.classList.contains('leave')) {
+    // Keep the old text while it slides out.
+    statusRow.classList.add('leave');
+    statusTimer = setTimeout(() => {
+      statusRow.hidden = true;
+      statusRow.classList.remove('leave');
+    }, exitDelay());
+  }
+
+  fadeInId = enterId = null;
+  mainEnter = confirmEnter = false;
 
   if (focusDeleteOf) {
     document.querySelector<HTMLButtonElement>(`[data-del="${CSS.escape(focusDeleteOf)}"]`)?.focus();
@@ -176,6 +207,9 @@ function cancelEditing() {
 function add(date: string, title: string, raw: string) {
   const temp: Event = { id: `temp-${Date.now()}`, title, date, created: new Date().toISOString() };
   events.push(temp);
+  sortEvents();
+  if (events[0] === temp) mainEnter = true;
+  else enterId = temp.id;
   return track(async () => {
     try {
       const saved = await api<Event>('POST', '', { title, date });
@@ -205,7 +239,8 @@ function saveEdit(id: string, date: string, title: string) {
 
 function startEditing(id: string) {
   const ev = events.find((e) => e.id === id);
-  if (!ev || isTemp(id)) return;
+  if (!ev || isTemp(id) || leavingId === id) return;
+  if (editingId !== id) fadeInId = id;
   editingId = id;
   error = '';
   input.value = `${ev.date} ${ev.title}`;
@@ -215,21 +250,37 @@ function startEditing(id: string) {
 }
 
 function onDelete(id: string) {
-  if (isTemp(id)) return;
+  // ponytail: one delete animates at a time; other deletes are ignored for those 150ms.
+  if (isTemp(id) || leavingId) return;
   clearTimeout(confirmTimer);
+  confirmLeaving = false;
   if (confirmId !== id) {
     confirmId = id;
+    confirmEnter = true;
     focusDeleteOf = id;
     confirmTimer = setTimeout(() => {
-      confirmId = null;
+      confirmLeaving = true;
       render();
+      confirmTimer = setTimeout(() => {
+        confirmId = null;
+        confirmLeaving = false;
+        render();
+      }, exitDelay());
     }, CONFIRM_MS);
     render();
     return;
   }
+  leavingId = id;
+  render();
+  setTimeout(() => remove(id), exitDelay());
+}
+
+function remove(id: string) {
+  leavingId = null;
   confirmId = null;
   const removed = events.find((e) => e.id === id);
-  if (!removed) return;
+  if (!removed) return render();
+  if (events[0] === removed) mainEnter = true;
   events = events.filter((e) => e.id !== id);
   if (editingId === id) stopEditing();
   render();
